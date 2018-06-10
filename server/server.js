@@ -35,7 +35,10 @@ io.on('connection', socket => {
         
         io.emit('newMessage', data)
         callback('This is from the server')
-        // socket.broadcast.emit('newMessage', data)
+    })
+
+    socket.on('createLocationMessage', data => {
+        io.emit('newLocationMessage', data)
     })
 
     socket.on('disconnect', () => {
