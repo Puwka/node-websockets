@@ -20,12 +20,18 @@ io.on('connection', socket => {
     console.log('new user! AHOY!')
 
     socket.emit('newMessage', {
-        from: 'Puwka',
-        text: 'Hello m8s'
+        from: 'Admin',
+        text: 'Welcome to the chat, m8!'
+    })
+
+    socket.broadcast.emit('newMessage', {
+        from: 'Admin',
+        text: 'New user joined, go message him :)'
     })
 
     socket.on('createMessage', (data) => {
-        io.emit('newMessage', data)
+        // io.emit('newMessage', data)
+        socket.broadcast.emit('newMessage', data)
     })
 
     socket.on('disconnect', () => {

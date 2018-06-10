@@ -6,11 +6,6 @@ function message(params) {
 
 socket.on('connect', () => {
     console.log('Connected to server')
-
-    socket.emit('createMessage', {
-        from: 'Mr. Noname',
-        text: 'Ahoy back to ya'
-    })
 })
 
 socket.on('disconnect', () => {
