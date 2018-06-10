@@ -5,6 +5,8 @@ import config from './config/default'
 import serve from 'koa-static'
 import err from './middleware/error';
 import socket from 'socket.io'
+import {generateMessage} from './utils/message'
+
 
 const clientPath = path.join(__dirname, '../client')
 const port = process.env.PORT || config.server.port
@@ -19,19 +21,13 @@ const io = socket(server);
 io.on('connection', socket => {
     console.log('new user! AHOY!')
 
-    socket.emit('newMessage', {
-        from: 'Admin',
-        text: 'Welcome to the chat, m8!'
-    })
+    socket.emit('newMessage', generateMessage('Admin', 'Welcome to chat, m8!'))
 
-    socket.broadcast.emit('newMessage', {
-        from: 'Admin',
-        text: 'New user joined, go message him :)'
-    })
+    socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined, go message him!'))
 
     socket.on('createMessage', (data) => {
-        // io.emit('newMessage', data)
-        socket.broadcast.emit('newMessage', data)
+        io.emit('newMessage', data)
+        // socket.broadcast.emit('newMessage', data)
     })
 
     socket.on('disconnect', () => {
