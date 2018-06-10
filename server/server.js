@@ -18,6 +18,12 @@ app.use(serve(clientPath));
 const server = http.createServer(app.callback());
 const io = socket(server);
 
+// function acknowlege (delay) {
+//     return new Promise(resolve => {
+//         setTimeout(() => resolve(console.log('this is from the server', delay)), delay)
+//     })
+// }
+
 io.on('connection', socket => {
     console.log('new user! AHOY!')
 
@@ -25,8 +31,10 @@ io.on('connection', socket => {
 
     socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined, go message him!'))
 
-    socket.on('createMessage', (data) => {
+    socket.on('createMessage', (data, callback) => {
+        
         io.emit('newMessage', data)
+        callback('This is from the server')
         // socket.broadcast.emit('newMessage', data)
     })
 
