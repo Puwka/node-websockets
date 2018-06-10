@@ -21,16 +21,15 @@ io.on('connection', socket => {
 
     socket.emit('newMessage', {
         from: 'Puwka',
-        text: 'Hello m8s',
-        createdAt: '0.0.1'
+        text: 'Hello m8s'
     })
 
     socket.on('createMessage', (data) => {
-        socket.emit('newMessage', data)
+        io.emit('newMessage', data)
     })
 
     socket.on('disconnect', () => {
-        console.log('User syebalsya')
+        console.log('Bye bye, User')
     })
 });
 
