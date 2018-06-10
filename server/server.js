@@ -4,11 +4,12 @@ import config from './config/default'
 import serve from 'koa-static'
 
 const clientPath = path.join(__dirname, '../client')
+const port = process.env.PORT || config.server.port
 
 const app = new koa()
 
 app.use(serve(clientPath))
 
-app.listen(config.server.port, () => {
-    console.log(`App listening on port ${config.server.port}`)
+app.listen(port, () => {
+    console.log(`App listening on port ${port}`)
 })
