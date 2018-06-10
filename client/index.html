@@ -8,5 +8,18 @@
 </head>
 <body>
     <h2>Hello animals</h2>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();  
+
+        socket.on('connect', () => {
+            console.log('Connected to server')
+        })
+
+        socket.on('disconnect', () => {
+            console.log('Someone syebalsya')
+        })
+    </script>
 </body>
 </html>
