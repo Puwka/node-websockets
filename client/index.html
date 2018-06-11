@@ -4,21 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <title>Puwka chat</title>
 </head>
-<body>
-    <h2>Websockets demo</h2>
+<body class="chat">
 
-    <form action="" id="message__form">
-        <input type="text" name="message" placeholder="Message" />
-        <button>Send</button>
-    </form>
-    <button id="send-location">Send location</button>
-
-    <div id="chat">
-
+    <div class="chat__sidebar">
+        <h3>Users</h3>
+        <div id="users"></div>
     </div>
-    
+
+    <div class="chat__main">
+        <ol id="messages" class="chat__messages"></ol>
+
+        <div class="chat__footer">
+            <form action="" id="message__form">
+                <input 
+                    type="text" 
+                    name="message" 
+                    placeholder="Message" 
+                    autocomplete="off"
+                    autofocus/>
+                <button>Send</button>
+            </form>
+            <button id="send-location">Send location</button>
+        </div>
+    </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/index.js"></script>
 </body>

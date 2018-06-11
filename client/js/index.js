@@ -13,7 +13,7 @@ socket.on('disconnect', () => {
 socket.on('newMessage', ({from = 'Guest', text, createdAt = new Date().getTime()}) => {
     console.log(`${createdAt} | ${from} texting: ${text}`)
     
-    chat.innerHTML += `<p><strong>${createdAt}</strong> | <strong>${from}</strong> texting: ${text} </p>`
+    chat.innerHTML += `<p><strong>${createdAt}</strong> | <strong>${from}</strong>: ${text} </p>`
 
 })
 
@@ -23,7 +23,7 @@ socket.on('newLocationMessage', ({latitude, longitude, from = 'Guest', createdAt
     <a target="blank" href="https://www.google.com/maps?q=${latitude},${longitude}">here</a>`
 })
 
-const chat = document.querySelector('#chat')
+const chat = document.querySelector('#messages')
 const form = document.querySelector('#message__form')
 const locationBtn = document.querySelector('#send-location')
 form.addEventListener('submit', submitHandler)
@@ -32,15 +32,19 @@ locationBtn.addEventListener('click', sendLocation)
 
 function submitHandler(e) {
     e.preventDefault()
-    let text = form.querySelector('[name=message]').value
+    const input = form.querySelector('[name=message]')
+    let text = input.value
     socket.emit('createMessage', {text},
         (res) => {
-            console.log(res)
+            input.value = ''
         }
     )
 }
 
 function sendLocation() {
+    let btn = event.currentTarget
+    btn.setAttribute('disabled', true)
+    btn.innerText = 'Sending...'
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
             let data = {
@@ -48,7 +52,8 @@ function sendLocation() {
                 longitude: position.coords.longitude,
             }
             socket.emit('createLocationMessage', data, (res) => {
-                console.log(res)
+                btn.removeAttribute('disabled')
+                btn.innerText = 'Send location'
             })
         }, e => alert('Can\'t reach your geolocation, Mr.Spy'))
     } else {
