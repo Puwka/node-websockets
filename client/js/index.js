@@ -10,14 +10,13 @@ socket.on('disconnect', () => {
     console.log('Bye bye, User!')
 })
 
-socket.on('newMessage', ({from = 'Guest', text, createdAt = new Date().getTime()}) => {
-    console.log(`${createdAt} | ${from} texting: ${text}`)
+socket.on('newMessage', ({from = 'Guest', text, createdAt = generateDate()}) => {
     
     chat.innerHTML += `<p><strong>${createdAt}</strong> | <strong>${from}</strong>: ${text} </p>`
 
 })
 
-socket.on('newLocationMessage', ({latitude, longitude, from = 'Guest', createdAt = new Date().getTime()}) => {
+socket.on('newLocationMessage', ({latitude, longitude, from = 'Guest', createdAt = generateDate()}) => {
     chat.innerHTML += `<p><strong>${createdAt}</strong> | 
     <strong>${from}</strong> calling that his geoposition is
     <a target="blank" href="https://www.google.com/maps?q=${latitude},${longitude}">here</a>`
@@ -29,6 +28,17 @@ const locationBtn = document.querySelector('#send-location')
 form.addEventListener('submit', submitHandler)
 locationBtn.addEventListener('click', sendLocation)
 
+
+function generateDate () {
+    const timestamp = new Date()
+    let hours = timestamp.getHours()
+    let minutes = timestamp.getMinutes()
+    let seconds = timestamp.getSeconds()
+    if (hours < 10) hours = `0${hours}`
+    if (minutes < 10) minutes = `0${minutes}`
+    if (seconds < 10) seconds = `0${seconds}`
+    return `${hours}:${minutes}:${seconds}`
+}
 
 function submitHandler(e) {
     e.preventDefault()
