@@ -14,8 +14,9 @@ socket.on('newMessage', ({from = 'Guest', text, createdAt = generateDate()}) => 
     
     chat.innerHTML += `<li class="message"><div class="message__title">
     <h4>${from}</h4><span>${createdAt}</span></div><div class="message__body">
-    <p>${text}</p></div></li>`
+    <p>${text}</p></div></li>`;
 
+    scrollToBottom();
 })
 
 socket.on('newLocationMessage', ({latitude, longitude, from = 'Guest', createdAt = generateDate()}) => {
@@ -24,6 +25,8 @@ socket.on('newLocationMessage', ({latitude, longitude, from = 'Guest', createdAt
     <p>I'm
     <a target="blank" href="https://www.google.com/maps?q=${latitude},${longitude}">here</a></p>
     </div></li>`
+
+    scrollToBottom();
 })
 
 const chat = document.querySelector('#messages')
@@ -44,7 +47,7 @@ function generateDate () {
     return `${hours}:${minutes}:${seconds}`
 }
 
-function submitHandler(e) {
+function submitHandler(e) { 
     e.preventDefault()
     const input = form.querySelector('[name=message]')
     let text = input.value
@@ -53,6 +56,7 @@ function submitHandler(e) {
             input.value = ''
         }
     )
+    scrollToBottom(true)
 }
 
 function sendLocation() {
@@ -70,7 +74,23 @@ function sendLocation() {
                 btn.innerText = 'Send location'
             })
         }, e => alert('Can\'t reach your geolocation, Mr.Spy'))
+        scrollToBottom(true)
     } else {
         alert('Can\'t reach your geolocation, Mr.Spy')
+    }
+}
+
+function scrollToBottom (bool) {
+
+    const newMessage = chat.querySelector('li:last-child')
+    const clientHeight = chat.clientHeight;
+    const scrollTop = chat.scrollTop;
+    const scrollHeight = chat.scrollHeight;
+    const newMessageHeight = newMessage.clientHeight
+    let lastMessageHeight = 0
+    if (newMessage.previousElementSibling) lastMessageHeight = newMessage.previousElementSibling.clientHeight
+
+    if (clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight || bool) {
+        chat.scrollTop = scrollHeight
     }
 }
