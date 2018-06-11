@@ -1,4 +1,4 @@
-# Websokets chat 
+# Websockets chat 
 
 # Ссылка на проект:
 https://chat-app-gvxvkpvsjr.now.sh/
