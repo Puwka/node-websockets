@@ -42,13 +42,15 @@ io.on('connection', socket => {
     
 
     socket.on('createMessage', (data, callback) => {
-        
-        io.emit('newMessage', data)
+        if (!isRealString(data.text)) return
+        data['from'] = users.getUser({id: socket.id}).name
+        io.to(users.getUser({id: socket.id}).room).emit('newMessage', data)
         callback()
     })
 
     socket.on('createLocationMessage', (data, callback) => {
-        io.emit('newLocationMessage', data)
+        data['from'] = users.getUser({id: socket.id}).name
+        io.to(users.getUser({id: socket.id}).room).emit('newLocationMessage', data)
         callback()
     })
 
