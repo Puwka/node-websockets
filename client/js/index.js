@@ -12,14 +12,18 @@ socket.on('disconnect', () => {
 
 socket.on('newMessage', ({from = 'Guest', text, createdAt = generateDate()}) => {
     
-    chat.innerHTML += `<p><strong>${createdAt}</strong> | <strong>${from}</strong>: ${text} </p>`
+    chat.innerHTML += `<li class="message"><div class="message__title">
+    <h4>${from}</h4><span>${createdAt}</span></div><div class="message__body">
+    <p>${text}</p></div></li>`
 
 })
 
 socket.on('newLocationMessage', ({latitude, longitude, from = 'Guest', createdAt = generateDate()}) => {
-    chat.innerHTML += `<p><strong>${createdAt}</strong> | 
-    <strong>${from}</strong> calling that his geoposition is
-    <a target="blank" href="https://www.google.com/maps?q=${latitude},${longitude}">here</a>`
+    chat.innerHTML += `<li class="message"><div class="message__title">
+    <h4>${from}</h4><span>${createdAt}</span></div><div class="message__body">
+    <p>I'm
+    <a target="blank" href="https://www.google.com/maps?q=${latitude},${longitude}">here</a></p>
+    </div></li>`
 })
 
 const chat = document.querySelector('#messages')
