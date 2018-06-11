@@ -3,11 +3,41 @@ const socket = io();
 
 
 socket.on('connect', () => {
-    console.log('Connected to server')
+    const query = window.location.search
+    let parsedQuery = query.split('&')
+    parsedQuery[0] = parsedQuery[0].replace(/\?/, '')
+    
+    let kostyl = parsedQuery.map(param => {
+        let splittedParam = param.split('=')
+        let result = {}
+        result[splittedParam[0]] = splittedParam[1]
+        return result
+    })
+    let params = {}
+    kostyl.forEach(param => {
+        for (let key in param) {
+            params[key] = param[key]
+        }
+    })
+    socket.emit('join', params, (err) => {
+        if (err) {
+            alert(err)
+            window.location.href = '/'
+        }
+        console.log('No error')
+    })
 })
 
 socket.on('disconnect', () => {
-    console.log('Bye bye, User!')
+    console.log('cya')
+})
+
+socket.on('updateUserList', (users) => {
+    const usersContainer = document.querySelector('#users')
+    usersContainer.innerHTML = '<ol></ol>'
+    users.forEach(user => {
+        usersContainer.querySelector('ol').innerHTML += `<li>${user}</li>`
+    })
 })
 
 socket.on('newMessage', ({from = 'Guest', text, createdAt = generateDate()}) => {

@@ -111,6 +111,8 @@
     border-radius: 5px;
     padding: 10px;
     margin: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   
   .chat__main {

@@ -5,8 +5,10 @@ import config from './config/default'
 import serve from 'koa-static'
 import err from './middleware/error';
 import socket from 'socket.io'
-import {generateMessage} from './utils/message'
 
+import { Users } from './utils/users'
+import { generateMessage } from './utils/message'
+import { isRealString } from './utils/validation'
 
 const clientPath = path.join(__dirname, '../client')
 const port = process.env.PORT || config.server.port
@@ -17,14 +19,27 @@ app.use(serve(clientPath));
 
 const server = http.createServer(app.callback());
 const io = socket(server);
+const users = new Users()
 
 
 io.on('connection', socket => {
-    console.log('new user! AHOY!')
+    // console.log('connected', socket.id);
 
-    socket.emit('newMessage', generateMessage('Admin', 'Welcome to chat, m8!'))
+    socket.on('join', (params, callback) => {
+        if (!isRealString(params.name) || !isRealString(params.room)) return callback('Name and room name are required')
 
-    socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined, go message him!'))
+        socket.join(params.room)
+        users.removeUser({id: socket.id})
+        users.addUser({id: socket.id, name: params.name, room: params.room})
+
+        io.to(params.room).emit('updateUserList', users.getUserList({room: params.room}))
+        socket.emit('newMessage', generateMessage('Admin', 'Welcome to chat, m8!'));
+        socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} joined, go message him!`));
+
+        callback()
+    }) 
+
+    
 
     socket.on('createMessage', (data, callback) => {
         
@@ -38,7 +53,12 @@ io.on('connection', socket => {
     })
 
     socket.on('disconnect', () => {
-        console.log('Bye bye, User')
+        const user = users.removeUser({id: socket.id})
+
+        if (user) {
+            io.to(user.room).emit('updateUserList', users.getUserList({room: user.room}))
+            io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left the room`))
+        }
     })
 });
 
