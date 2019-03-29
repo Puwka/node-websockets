@@ -10,8 +10,8 @@ import { Users } from './utils/users'
 import { generateMessage } from './utils/message'
 import { isRealString } from './utils/validation'
 
-const clientPath = path.join(__dirname, '../client')
-const port = process.env.PORT || config.server.port
+const clientPath = path.join(__dirname, '../client');
+const port = process.env.PORT || config.server.port;
 
 const app = new koa();
 app.use(err);
@@ -19,7 +19,7 @@ app.use(serve(clientPath));
 
 const server = http.createServer(app.callback());
 const io = socket(server);
-const users = new Users()
+const users = new Users();
 
 
 io.on('connection', socket => {
@@ -62,6 +62,10 @@ io.on('connection', socket => {
             io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left the room`))
         }
     })
+});
+
+process.on('SIGINT', function() {
+    process.exit();
 });
 
 server.listen(port, () => {
